@@ -102,6 +102,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 📞 Contact
 
-Sridhanush Varma - sridhanushvarmasv@gmail.com
+Sridhanush Varma - sridhanushvarmasv@outlook.com
 
 Project Link: [https://github.com/your-username/Portfolio-Website](https://github.com/your-username/Portfolio-Website)
