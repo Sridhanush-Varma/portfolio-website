@@ -1,6 +1,6 @@
 {
   "name": "portfolio-website",
-  "homepage": "https://sridhanush-varma.github.io/Portfolio-Website",
+  "homepage": "https://sridhanush-varma.github.io/portfolio-website",
   "version": "1.0.0",
   "private": true,
   "dependencies": {
@@ -44,5 +44,5 @@
   },
   "devDependencies": {
     "gh-pages": "^6.3.0"
-  }
+  }  
 }
