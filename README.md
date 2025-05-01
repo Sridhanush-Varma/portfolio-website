@@ -104,4 +104,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 Sridhanush Varma - sridhanushvarmasv@outlook.com
 
-Project Link: [https://github.com/your-username/Portfolio-Website](https://github.com/your-username/Portfolio-Website)
+Project Link: [https://github.com/your-username/Portfolio-Website](https://github.com/sridhanush-varma/portfolio-website)
