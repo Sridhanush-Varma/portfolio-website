@@ -121,7 +121,7 @@ const Header = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
           >
-            Computer Vision & Image Processing Specialist
+            Full Stack Developer & ML/NLP Specialist
           </motion.p>
 
           <motion.div
