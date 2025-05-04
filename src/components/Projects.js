@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 const Projects = () => {
   const projects = [
     {
-      title: "DiabetesTrack",
+      title: "Diabetes Tracker",
       description: "A comprehensive diabetes tracking web application focused on long-term health monitoring, allowing users to track blood sugar levels, diet, and analyze health trends over time.",
       details: [
         "Developed a user-friendly interface for daily blood sugar and diet tracking",
@@ -13,7 +13,7 @@ const Projects = () => {
         "Built export functionality for generating reports in CSV/PDF formats for medical professionals"
       ],
       technologies: ["React", "Node.js", "Express", "MongoDB", "Chart.js", "TailwindCSS"],
-      github: "https://github.com/Sridhanush-Varma/portfolio-website",
+      github: "https://github.com/Sridhanush-Varma/diabetes-tracker.git",
       image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
     },
     {
@@ -68,16 +68,18 @@ const Projects = () => {
       image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
     },
     {
-      title: "ChatBot using Python",
-      description: "An intelligent conversational agent built with natural language processing capabilities.",
+      title: "Voxa - Voice-Enabled Smart Chatbot",
+      description: "An advanced Python-based intelligent chatbot that supports voice interactions, natural language processing, weather information retrieval, web search capabilities, and an expanded knowledge base with advanced response generation.",
       details: [
-        "Developed a basic chatbot using Python",
-        "Implemented a chatbot using NLTK library",
-        "Created a chatbot that can answer questions and help with tasks",
-        "Created the chatbot using speech technology"
+        "Implemented voice input/output capabilities using SpeechRecognition and pyttsx3",
+        "Integrated weather information retrieval using OpenWeatherMap API",
+        "Added web search capabilities using Google Custom Search API",
+        "Developed advanced NLP with sentiment analysis and context awareness",
+        "Created an expandable knowledge base with facts and Q&A pairs",
+        "Built task execution for time queries, calculations, and information retrieval"
       ],
-      technologies: ["Python", "NLTK", "Speech Recognition"],
-      github: "https://github.com/Sridhanush-Varma/Chatbot.git",
+      technologies: ["Python", "NLTK", "SpeechRecognition", "pyttsx3", "scikit-learn", "requests", "BeautifulSoup", "Google API", "TextBlob"],
+      github: "https://github.com/Sridhanush-Varma/Voxa.git",
       image: "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
     }
   ];

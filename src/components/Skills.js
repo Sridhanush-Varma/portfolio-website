@@ -29,7 +29,9 @@ const Skills = () => {
         { name: "scikit-learn", level: 85 },
         { name: "TF-IDF Vectorization", level: 90 },
         { name: "Natural Language Processing", level: 85 },
-        { name: "Text Similarity Analysis", level: 80 }
+        { name: "Text Similarity Analysis", level: 80 },
+        { name: "Sentiment Analysis", level: 82 },
+        { name: "Speech Recognition", level: 88 }
       ]
     },
     {
@@ -47,6 +49,15 @@ const Skills = () => {
         { name: "Mongoose", level: 75 },
         { name: "GitHub Actions", level: 85 },
         { name: "Deployment Automation", level: 80 }
+      ]
+    },
+    {
+      category: "API Integrations",
+      skills: [
+        { name: "RESTful APIs", level: 88 },
+        { name: "OpenWeatherMap API", level: 85 },
+        { name: "Google Custom Search API", level: 82 },
+        { name: "API Authentication", level: 80 }
       ]
     }
   ];
