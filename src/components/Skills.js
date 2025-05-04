@@ -17,8 +17,10 @@ const Skills = () => {
       skills: [
         { name: "React", level: 85 },
         { name: "Next.js", level: 80 },
+        { name: "Express.js", level: 82 },
         { name: "Flask", level: 85 },
-        { name: "TailwindCSS", level: 90 }
+        { name: "TailwindCSS", level: 90 },
+        { name: "Chart.js", level: 85 }
       ]
     },
     {
@@ -79,7 +81,7 @@ const Skills = () => {
     >
       <h2>Technical Skills</h2>
       <p className="section-description">
-        My expertise spans full-stack web development, natural language processing, machine learning, and computer vision technologies.
+        My expertise spans full-stack web development, natural language processing, machine learning, health monitoring applications, and computer vision technologies.
       </p>
 
       <div className="skills-container">

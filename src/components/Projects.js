@@ -4,6 +4,19 @@ import { motion } from 'framer-motion';
 const Projects = () => {
   const projects = [
     {
+      title: "DiabetesTrack",
+      description: "A comprehensive diabetes tracking web application focused on long-term health monitoring, allowing users to track blood sugar levels, diet, and analyze health trends over time.",
+      details: [
+        "Developed a user-friendly interface for daily blood sugar and diet tracking",
+        "Implemented data visualization with Chart.js for weekly/monthly/yearly health trends",
+        "Created secure user authentication system for private health data",
+        "Built export functionality for generating reports in CSV/PDF formats for medical professionals"
+      ],
+      technologies: ["React", "Node.js", "Express", "MongoDB", "Chart.js", "TailwindCSS"],
+      github: "https://github.com/Sridhanush-Varma/DiabetesTrack.git",
+      image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+    },
+    {
       title: "Resume Matcher",
       description: "An intelligent web application that utilizes NLP and ML techniques to analyze, compare, and score resumes against job descriptions.",
       details: [
@@ -116,7 +129,7 @@ const Projects = () => {
     >
       <h2>Projects</h2>
       <p className="section-description">
-        A selection of my recent work in web development, natural language processing, machine learning, and computer vision.
+        A selection of my recent work in web development, natural language processing, machine learning, health monitoring applications, and computer vision.
       </p>
       <div className="projects-container">
         {projects.map((project, index) => (
