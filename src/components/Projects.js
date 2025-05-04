@@ -13,7 +13,7 @@ const Projects = () => {
         "Built export functionality for generating reports in CSV/PDF formats for medical professionals"
       ],
       technologies: ["React", "Node.js", "Express", "MongoDB", "Chart.js", "TailwindCSS"],
-      github: "https://github.com/Sridhanush-Varma/DiabetesTrack.git",
+      github: "https://github.com/Sridhanush-Varma/portfolio-website",
       image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
     },
     {
