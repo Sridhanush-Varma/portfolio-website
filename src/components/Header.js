@@ -1,13 +1,75 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import ReactCrop, { centerCrop, makeAspectCrop } from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
 
 const Header = () => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [imgSrc, setImgSrc] = useState('');
+  const [crop, setCrop] = useState();
+  const [completedCrop, setCompletedCrop] = useState(null);
+  const [profileImage, setProfileImage] = useState('https://github.com/Sridhanush-Varma.png');
+  const imgRef = useRef(null);
+  const previewCanvasRef = useRef(null);
   const ADMIN_PASSWORD = "Deepika@04";
 
+  // Load profile image from localStorage on component mount
+  useEffect(() => {
+    const savedImage = localStorage.getItem('profileImage');
+    if (savedImage) {
+      setProfileImage(savedImage);
+    }
+  }, []);
+
+  // Update preview canvas when crop changes
+  useEffect(() => {
+    if (completedCrop && imgRef.current && previewCanvasRef.current) {
+      const updatePreview = async () => {
+        const image = imgRef.current;
+        const canvas = previewCanvasRef.current;
+        const crop = completedCrop;
+
+        if (!crop || !canvas || !image) return;
+
+        const scaleX = image.naturalWidth / image.width;
+        const scaleY = image.naturalHeight / image.height;
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas size to match the crop dimensions
+        const pixelRatio = window.devicePixelRatio || 1;
+        canvas.width = crop.width * pixelRatio;
+        canvas.height = crop.height * pixelRatio;
+
+        // Apply device pixel ratio for sharper preview
+        ctx.scale(pixelRatio, pixelRatio);
+        ctx.imageSmoothingQuality = 'high';
+
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw the cropped image
+        ctx.drawImage(
+          image,
+          crop.x * scaleX,
+          crop.y * scaleY,
+          crop.width * scaleX,
+          crop.height * scaleY,
+          0,
+          0,
+          crop.width,
+          crop.height
+        );
+      };
+
+      updatePreview();
+    }
+  }, [completedCrop]);
+
+  // Function to handle admin login
   const handleAdminLogin = () => {
     const password = prompt("Enter admin password:");
     if (password === ADMIN_PASSWORD) {
@@ -15,6 +77,115 @@ const Header = () => {
     } else {
       alert("Invalid password!");
     }
+  };
+
+  // Function to handle image file selection
+  const onSelectFile = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const reader = new FileReader();
+      reader.addEventListener('load', () => {
+        setImgSrc(reader.result.toString() || '');
+        setShowCropModal(true);
+      });
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
+
+  // Function to handle image load for cropping
+  const onImageLoad = (e) => {
+    const { width, height } = e.currentTarget;
+
+    // Create a centered crop with aspect ratio 1:1 (circle)
+    const crop = centerCrop(
+      makeAspectCrop(
+        {
+          unit: '%',
+          width: 90,
+        },
+        1, // 1:1 aspect ratio
+        width,
+        height
+      ),
+      width,
+      height
+    );
+
+    setCrop(crop);
+  };
+
+  // Function to generate the cropped image
+  const generateCroppedImage = async () => {
+    if (!completedCrop || !imgRef.current || !previewCanvasRef.current) {
+      return;
+    }
+
+    const image = imgRef.current;
+    const canvas = document.createElement('canvas');
+    const crop = completedCrop;
+
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+    const ctx = canvas.getContext('2d');
+
+    // Set canvas size to match the crop dimensions with high quality
+    const pixelRatio = window.devicePixelRatio || 1;
+    canvas.width = crop.width * pixelRatio;
+    canvas.height = crop.height * pixelRatio;
+
+    // Apply device pixel ratio for sharper image
+    ctx.scale(pixelRatio, pixelRatio);
+    ctx.imageSmoothingQuality = 'high';
+
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw the cropped image
+    ctx.drawImage(
+      image,
+      crop.x * scaleX,
+      crop.y * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
+      0,
+      0,
+      crop.width,
+      crop.height
+    );
+
+    // Convert canvas to blob and then to data URL
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          console.error('Canvas is empty');
+          return;
+        }
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = () => {
+          const base64data = reader.result;
+          resolve(base64data);
+        };
+      }, 'image/jpeg', 0.95); // Higher quality JPEG
+    });
+  };
+
+  // Function to save the cropped image
+  const saveCroppedImage = async () => {
+    try {
+      const croppedImageData = await generateCroppedImage();
+      setProfileImage(croppedImageData);
+      localStorage.setItem('profileImage', croppedImageData);
+      setShowCropModal(false);
+      setImgSrc('');
+    } catch (e) {
+      console.error('Error saving cropped image:', e);
+    }
+  };
+
+  // Function to close the crop modal
+  const closeCropModal = () => {
+    setShowCropModal(false);
+    setImgSrc('');
   };
 
   const shareProfile = (platform) => {
@@ -93,7 +264,7 @@ const Header = () => {
             whileHover={{ scale: 1.05 }}
           >
             <motion.img
-              src="https://github.com/Sridhanush-Varma.png"
+              src={profileImage}
               alt="Profile Picture"
               onLoad={() => setImageLoaded(true)}
               initial={{ opacity: 0 }}
@@ -101,10 +272,69 @@ const Header = () => {
               transition={{ duration: 0.5 }}
             />
             {isAdmin && (
-              <input type="file" accept="image/*" className="profile-upload" />
+              <label htmlFor="profile-upload" className="profile-upload-label">
+                <i className="fas fa-camera"></i>
+                <input
+                  id="profile-upload"
+                  type="file"
+                  accept="image/*"
+                  className="profile-upload"
+                  onChange={onSelectFile}
+                />
+              </label>
             )}
           </motion.div>
         </div>
+
+        {/* Image Crop Modal */}
+        {showCropModal && (
+          <div className="crop-modal-overlay">
+            <div className="crop-modal">
+              <div className="crop-modal-header">
+                <h3>Crop Profile Picture</h3>
+                <button className="close-modal-btn" onClick={closeCropModal}>
+                  <i className="fas fa-times"></i>
+                </button>
+              </div>
+              <div className="crop-container">
+                {imgSrc && (
+                  <ReactCrop
+                    crop={crop}
+                    onChange={(_, percentCrop) => setCrop(percentCrop)}
+                    onComplete={(c) => setCompletedCrop(c)}
+                    aspect={1}
+                    circularCrop
+                  >
+                    <img
+                      ref={imgRef}
+                      alt="Crop me"
+                      src={imgSrc}
+                      onLoad={onImageLoad}
+                    />
+                  </ReactCrop>
+                )}
+              </div>
+              <div className="crop-preview">
+                <h4>Preview</h4>
+                <div className="preview-container">
+                  <canvas
+                    ref={previewCanvasRef}
+                    style={{
+                      width: completedCrop?.width ?? 0,
+                      height: completedCrop?.height ?? 0,
+                      borderRadius: '50%',
+                      objectFit: 'contain'
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="crop-actions">
+                <button className="cancel-btn" onClick={closeCropModal}>Cancel</button>
+                <button className="save-btn" onClick={saveCroppedImage}>Save</button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="header-text">
           <motion.h1

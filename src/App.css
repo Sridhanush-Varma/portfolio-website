@@ -227,6 +227,181 @@ header {
   transform: scale(1.05);
 }
 
+/* Profile upload styles */
+.profile-upload {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.profile-upload-label {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: var(--accent-color);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border: 2px solid white;
+  z-index: 10;
+}
+
+.profile-upload-label:hover {
+  transform: scale(1.1);
+  background-color: var(--primary-color);
+}
+
+/* Crop modal styles */
+.crop-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.crop-modal {
+  background-color: white;
+  border-radius: var(--border-radius);
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+}
+
+.crop-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--neutral-light);
+}
+
+.crop-modal-header h3 {
+  margin: 0;
+  color: var(--primary-color);
+}
+
+.close-modal-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--neutral-medium);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close-modal-btn:hover {
+  color: var(--primary-color);
+}
+
+.crop-container {
+  padding: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-height: 50vh;
+  overflow: hidden;
+}
+
+/* ReactCrop component styling overrides */
+.ReactCrop {
+  max-width: 100%;
+  max-height: 400px;
+  margin: 0 auto;
+}
+
+.ReactCrop__crop-selection {
+  border-radius: 50%;
+  border: 2px solid var(--accent-color);
+  box-shadow: 0 0 0 9999em rgba(0, 0, 0, 0.5);
+}
+
+.ReactCrop__drag-handle::after {
+  background-color: var(--accent-color);
+}
+
+.crop-preview {
+  padding: 0 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.crop-preview h4 {
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
+.preview-container {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--neutral-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.crop-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--neutral-light);
+}
+
+.cancel-btn, .save-btn {
+  padding: 0.7rem 1.5rem;
+  border-radius: 30px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn {
+  background-color: var(--neutral-light);
+  color: var(--text-color);
+  border: none;
+}
+
+.cancel-btn:hover {
+  background-color: var(--neutral-medium);
+  color: white;
+}
+
+.save-btn {
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+}
+
+.save-btn:hover {
+  background-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 .social-links {
   display: flex;
   gap: 1rem;

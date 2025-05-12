@@ -12,6 +12,7 @@
     "postcss": "^8.5.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-image-crop": "^11.0.10",
     "react-router-dom": "^7.3.0",
     "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4"
@@ -44,5 +45,5 @@
   },
   "devDependencies": {
     "gh-pages": "^6.3.0"
-  }  
+  }
 }
