@@ -3,6 +3,95 @@ import { motion } from 'framer-motion';
 import ReactCrop, { centerCrop, makeAspectCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 
+// IndexedDB setup for profile image storage
+const openProfileImageDB = () => {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('ProfileImageDB', 1);
+
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains('profileImages')) {
+        db.createObjectStore('profileImages', { keyPath: 'id' });
+      }
+    };
+
+    request.onsuccess = (event) => {
+      resolve(event.target.result);
+    };
+
+    request.onerror = (event) => {
+      console.error('IndexedDB error:', event.target.error);
+      reject(event.target.error);
+    };
+  });
+};
+
+// Function to save profile image to IndexedDB
+const saveProfileImageToDB = async (imageData) => {
+  try {
+    const db = await openProfileImageDB();
+    const transaction = db.transaction(['profileImages'], 'readwrite');
+    const store = transaction.objectStore('profileImages');
+
+    // Save with timestamp for versioning
+    const imageRecord = {
+      id: 'currentProfileImage',
+      data: imageData,
+      timestamp: Date.now()
+    };
+
+    return new Promise((resolve, reject) => {
+      const request = store.put(imageRecord);
+
+      request.onsuccess = () => {
+        // Also save to localStorage as a fallback and for quicker access
+        localStorage.setItem('profileImage', imageData);
+        localStorage.setItem('profileImageTimestamp', imageRecord.timestamp.toString());
+        resolve();
+      };
+
+      request.onerror = (event) => {
+        console.error('Error saving to IndexedDB:', event.target.error);
+        reject(event.target.error);
+      };
+    });
+  } catch (error) {
+    console.error('Failed to save profile image to IndexedDB:', error);
+    // Fallback to localStorage only
+    localStorage.setItem('profileImage', imageData);
+    localStorage.setItem('profileImageTimestamp', Date.now().toString());
+  }
+};
+
+// Function to get profile image from IndexedDB
+const getProfileImageFromDB = async () => {
+  try {
+    const db = await openProfileImageDB();
+    const transaction = db.transaction(['profileImages'], 'readonly');
+    const store = transaction.objectStore('profileImages');
+
+    return new Promise((resolve, reject) => {
+      const request = store.get('currentProfileImage');
+
+      request.onsuccess = (event) => {
+        if (event.target.result) {
+          resolve(event.target.result);
+        } else {
+          resolve(null);
+        }
+      };
+
+      request.onerror = (event) => {
+        console.error('Error retrieving from IndexedDB:', event.target.error);
+        reject(event.target.error);
+      };
+    });
+  } catch (error) {
+    console.error('Failed to get profile image from IndexedDB:', error);
+    return null;
+  }
+};
+
 const Header = () => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -13,16 +102,76 @@ const Header = () => {
   const [crop, setCrop] = useState();
   const [completedCrop, setCompletedCrop] = useState(null);
   const [profileImage, setProfileImage] = useState('https://github.com/Sridhanush-Varma.png');
+  const [lastUpdated, setLastUpdated] = useState(null);
   const imgRef = useRef(null);
   const previewCanvasRef = useRef(null);
   const ADMIN_PASSWORD = "Deepika@04";
 
-  // Load profile image from localStorage on component mount
+  // Load profile image on component mount and check for updates
   useEffect(() => {
-    const savedImage = localStorage.getItem('profileImage');
-    if (savedImage) {
-      setProfileImage(savedImage);
-    }
+    const loadProfileImage = async () => {
+      try {
+        // First try to get from IndexedDB
+        const imageRecord = await getProfileImageFromDB();
+
+        if (imageRecord && imageRecord.data) {
+          setProfileImage(imageRecord.data);
+          setLastUpdated(new Date(imageRecord.timestamp).toLocaleString());
+          // Update localStorage with the latest data
+          localStorage.setItem('profileImage', imageRecord.data);
+          localStorage.setItem('profileImageTimestamp', imageRecord.timestamp.toString());
+        } else {
+          // Fallback to localStorage
+          const savedImage = localStorage.getItem('profileImage');
+          const savedTimestamp = localStorage.getItem('profileImageTimestamp');
+          if (savedImage) {
+            setProfileImage(savedImage);
+            if (savedTimestamp) {
+              setLastUpdated(new Date(parseInt(savedTimestamp, 10)).toLocaleString());
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error loading profile image:', error);
+        // Final fallback to localStorage
+        const savedImage = localStorage.getItem('profileImage');
+        if (savedImage) {
+          setProfileImage(savedImage);
+        }
+      }
+    };
+
+    // Load image immediately on mount
+    loadProfileImage();
+
+    // Set up periodic check for updates (every 5 minutes)
+    // This ensures all visitors see the latest profile picture
+    const checkForUpdates = async () => {
+      try {
+        const imageRecord = await getProfileImageFromDB();
+        if (!imageRecord) return;
+
+        // Get current timestamp from localStorage
+        const currentTimestamp = parseInt(localStorage.getItem('profileImageTimestamp') || '0', 10);
+
+        // If the image in IndexedDB is newer, update the display
+        if (imageRecord.timestamp > currentTimestamp) {
+          setProfileImage(imageRecord.data);
+          setLastUpdated(new Date(imageRecord.timestamp).toLocaleString());
+          localStorage.setItem('profileImage', imageRecord.data);
+          localStorage.setItem('profileImageTimestamp', imageRecord.timestamp.toString());
+          console.log('Profile image updated to latest version');
+        }
+      } catch (error) {
+        console.error('Error checking for profile image updates:', error);
+      }
+    };
+
+    // Check for updates every 5 minutes
+    const updateInterval = setInterval(checkForUpdates, 5 * 60 * 1000);
+
+    // Clean up interval on component unmount
+    return () => clearInterval(updateInterval);
   }, []);
 
   // Update preview canvas when crop changes
@@ -173,12 +322,24 @@ const Header = () => {
   const saveCroppedImage = async () => {
     try {
       const croppedImageData = await generateCroppedImage();
+
+      // Update the UI immediately
       setProfileImage(croppedImageData);
-      localStorage.setItem('profileImage', croppedImageData);
+      const now = new Date();
+      setLastUpdated(now.toLocaleString());
+
+      // Save to IndexedDB for persistence across all users
+      await saveProfileImageToDB(croppedImageData);
+
+      // Close the modal and reset state
       setShowCropModal(false);
       setImgSrc('');
+
+      // Show success message
+      alert('Profile picture updated successfully! The new image will be visible to all visitors.');
     } catch (e) {
       console.error('Error saving cropped image:', e);
+      alert('Failed to save the profile picture. Please try again.');
     }
   };
 
@@ -259,31 +420,38 @@ const Header = () => {
 
       <div className="header-content">
         <div className="profile-section">
-          <motion.div
-            className="profile-picture-container"
-            whileHover={{ scale: 1.05 }}
-          >
-            <motion.img
-              src={profileImage}
-              alt="Profile Picture"
-              onLoad={() => setImageLoaded(true)}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: imageLoaded ? 1 : 0 }}
-              transition={{ duration: 0.5 }}
-            />
-            {isAdmin && (
-              <label htmlFor="profile-upload" className="profile-upload-label">
-                <i className="fas fa-camera"></i>
-                <input
-                  id="profile-upload"
-                  type="file"
-                  accept="image/*"
-                  className="profile-upload"
-                  onChange={onSelectFile}
-                />
-              </label>
+          <div className="profile-image-wrapper">
+            <motion.div
+              className="profile-picture-container"
+              whileHover={{ scale: 1.05 }}
+            >
+              <motion.img
+                src={profileImage}
+                alt="Profile Picture"
+                onLoad={() => setImageLoaded(true)}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: imageLoaded ? 1 : 0 }}
+                transition={{ duration: 0.5 }}
+              />
+              {isAdmin && (
+                <label htmlFor="profile-upload" className="profile-upload-label">
+                  <i className="fas fa-camera"></i>
+                  <input
+                    id="profile-upload"
+                    type="file"
+                    accept="image/*"
+                    className="profile-upload"
+                    onChange={onSelectFile}
+                  />
+                </label>
+              )}
+            </motion.div>
+            {lastUpdated && (
+              <div className="profile-last-updated">
+                <i className="fas fa-clock"></i> Updated: {lastUpdated}
+              </div>
             )}
-          </motion.div>
+          </div>
         </div>
 
         {/* Image Crop Modal */}
