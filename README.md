@@ -104,7 +104,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 If you use this project in any form (website, app, service, or derivative code), you **must** include the following attribution in your documentation, website footer, or credits page:
 
-> Created by Sridhanush Varma – [https://github.com/Sridhanush-Varma/Resume-Matcher](https://github.com/Sridhanush-Varma/Resume-Matcher)
+> Created by Sridhanush Varma – [https://github.com/Sridhanush-Varma/portfolio-website](https://github.com/Sridhanush-Varma/portfolio-website)
 
 Thank you for respecting the work that went into this project! 💻✨
 
