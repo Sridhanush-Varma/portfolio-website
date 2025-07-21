@@ -230,13 +230,39 @@ const Header = () => {
 
   // Function to handle image file selection
   const onSelectFile = (e) => {
+    console.log('File selection triggered');
     if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      console.log('Selected file:', file.name, file.type, file.size);
+
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please select a valid image file.');
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size must be less than 5MB.');
+        return;
+      }
+
       const reader = new FileReader();
-      reader.addEventListener('load', () => {
+      reader.onload = () => {
+        console.log('File read successfully');
         setImgSrc(reader.result.toString() || '');
         setShowCropModal(true);
-      });
-      reader.readAsDataURL(e.target.files[0]);
+      };
+      reader.onerror = () => {
+        console.error('Error reading file');
+        alert('Error reading the selected file. Please try again.');
+      };
+      reader.readAsDataURL(file);
+
+      // Reset the input value so the same file can be selected again
+      e.target.value = '';
+    } else {
+      console.log('No file selected');
     }
   };
 
@@ -264,29 +290,38 @@ const Header = () => {
 
   // Function to generate the cropped image
   const generateCroppedImage = async () => {
-    if (!completedCrop || !imgRef.current || !previewCanvasRef.current) {
-      return;
+    if (!completedCrop || !imgRef.current) {
+      console.error('Missing required elements for cropping');
+      return null;
     }
 
     const image = imgRef.current;
-    const canvas = document.createElement('canvas');
     const crop = completedCrop;
+
+    // Validate crop dimensions
+    if (!crop.width || !crop.height) {
+      console.error('Invalid crop dimensions');
+      return null;
+    }
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    if (!ctx) {
+      console.error('Could not get canvas context');
+      return null;
+    }
 
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
-    const ctx = canvas.getContext('2d');
 
-    // Set canvas size to match the crop dimensions with high quality
-    const pixelRatio = window.devicePixelRatio || 1;
-    canvas.width = crop.width * pixelRatio;
-    canvas.height = crop.height * pixelRatio;
+    // Set canvas size to match the crop dimensions
+    canvas.width = crop.width;
+    canvas.height = crop.height;
 
-    // Apply device pixel ratio for sharper image
-    ctx.scale(pixelRatio, pixelRatio);
+    // Enable high quality rendering
+    ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
-
-    // Clear the canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Draw the cropped image
     ctx.drawImage(
@@ -302,34 +337,48 @@ const Header = () => {
     );
 
     // Convert canvas to blob and then to data URL
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       canvas.toBlob((blob) => {
         if (!blob) {
-          console.error('Canvas is empty');
+          console.error('Canvas is empty - failed to create blob');
+          reject(new Error('Failed to create image blob'));
           return;
         }
         const reader = new FileReader();
-        reader.readAsDataURL(blob);
-        reader.onloadend = () => {
-          const base64data = reader.result;
-          resolve(base64data);
+        reader.onload = () => {
+          resolve(reader.result);
         };
-      }, 'image/jpeg', 0.95); // Higher quality JPEG
+        reader.onerror = () => {
+          reject(new Error('Failed to read image data'));
+        };
+        reader.readAsDataURL(blob);
+      }, 'image/jpeg', 0.95);
     });
   };
 
   // Function to save the cropped image
   const saveCroppedImage = async () => {
     try {
+      console.log('Starting image crop and save process...');
       const croppedImageData = await generateCroppedImage();
+
+      if (!croppedImageData) {
+        throw new Error('Failed to generate cropped image');
+      }
+
+      console.log('Cropped image generated successfully');
 
       // Update the UI immediately
       setProfileImage(croppedImageData);
       const now = new Date();
       setLastUpdated(now.toLocaleString());
 
+      console.log('UI updated with new image');
+
       // Save to IndexedDB for persistence across all users
       await saveProfileImageToDB(croppedImageData);
+
+      console.log('Image saved to database');
 
       // Close the modal and reset state
       setShowCropModal(false);
@@ -339,7 +388,7 @@ const Header = () => {
       alert('Profile picture updated successfully! The new image will be visible to all visitors.');
     } catch (e) {
       console.error('Error saving cropped image:', e);
-      alert('Failed to save the profile picture. Please try again.');
+      alert(`Failed to save the profile picture: ${e.message}. Please try again.`);
     }
   };
 

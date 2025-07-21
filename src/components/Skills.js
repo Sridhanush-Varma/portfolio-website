@@ -5,60 +5,27 @@ const Skills = () => {
   const skillCategories = [
     {
       category: "Programming Languages",
-      skills: [
-        { name: "Python", level: 95 },
-        { name: "JavaScript", level: 85 },
-        { name: "TypeScript", level: 80 },
-        { name: "HTML/CSS", level: 90 }
-      ]
+      skills: ["Python", "JavaScript", "TypeScript", "HTML/CSS"]
     },
     {
       category: "Frameworks & Libraries",
-      skills: [
-        { name: "React", level: 85 },
-        { name: "Next.js", level: 80 },
-        { name: "Express.js", level: 82 },
-        { name: "Flask", level: 85 },
-        { name: "TailwindCSS", level: 90 },
-        { name: "Chart.js", level: 85 }
-      ]
+      skills: ["React", "Next.js", "Express.js", "Flask", "TailwindCSS", "Chart.js"]
     },
     {
       category: "Machine Learning & NLP",
-      skills: [
-        { name: "scikit-learn", level: 85 },
-        { name: "TF-IDF Vectorization", level: 90 },
-        { name: "Natural Language Processing", level: 85 },
-        { name: "Text Similarity Analysis", level: 80 },
-        { name: "Sentiment Analysis", level: 82 },
-        { name: "Speech Recognition", level: 88 }
-      ]
+      skills: ["scikit-learn", "TF-IDF Vectorization", "Natural Language Processing", "Text Similarity Analysis", "Sentiment Analysis", "Speech Recognition"]
     },
     {
       category: "Computer Vision & Image Processing",
-      skills: [
-        { name: "OpenCV", level: 85 },
-        { name: "Image Processing", level: 90 },
-        { name: "Facial Recognition", level: 80 }
-      ]
+      skills: ["OpenCV", "Image Processing", "Facial Recognition"]
     },
     {
       category: "Databases & DevOps",
-      skills: [
-        { name: "MongoDB", level: 80 },
-        { name: "Mongoose", level: 75 },
-        { name: "GitHub Actions", level: 85 },
-        { name: "Deployment Automation", level: 80 }
-      ]
+      skills: ["MongoDB", "Mongoose", "GitHub Actions", "Deployment Automation"]
     },
     {
       category: "API Integrations",
-      skills: [
-        { name: "RESTful APIs", level: 88 },
-        { name: "OpenWeatherMap API", level: 85 },
-        { name: "Google Custom Search API", level: 82 },
-        { name: "API Authentication", level: 80 }
-      ]
+      skills: ["RESTful APIs", "OpenWeatherMap API", "Google Custom Search API", "API Authentication"]
     }
   ];
 
@@ -103,28 +70,17 @@ const Skills = () => {
             variants={itemVariants}
           >
             <h3>{category.category}</h3>
-            <div className="skill-bars">
+            <div className="skill-tags">
               {category.skills.map((skill, skillIndex) => (
-                <motion.div
+                <motion.span
                   key={skillIndex}
-                  className="skill-bar-container"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.3 + (catIndex * 0.1) + (skillIndex * 0.1) }}
+                  className="skill-tag"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.3 + (catIndex * 0.1) + (skillIndex * 0.05) }}
                 >
-                  <div className="skill-bar-header">
-                    <span className="skill-name">{skill.name}</span>
-                    <span className="skill-level">{skill.level}%</span>
-                  </div>
-                  <div className="skill-bar-bg">
-                    <motion.div
-                      className="skill-bar-fill"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${skill.level}%` }}
-                      transition={{ duration: 1, delay: 0.5 + (catIndex * 0.1) + (skillIndex * 0.1) }}
-                    ></motion.div>
-                  </div>
-                </motion.div>
+                  {skill}
+                </motion.span>
               ))}
             </div>
           </motion.div>

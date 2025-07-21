@@ -546,47 +546,32 @@ header {
   border-bottom: 2px solid var(--neutral-light);
 }
 
-.skill-bars {
+.skill-tags {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 0.5rem;
 }
 
-.skill-bar-container {
-  width: 100%;
-}
-
-.skill-bar-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-}
-
-.skill-name {
-  font-weight: 500;
-  color: var(--text-color);
-}
-
-.skill-level {
-  color: var(--accent-color);
-  font-weight: 600;
-}
-
-.skill-bar-bg {
-  height: 8px;
+.skill-tag {
   background-color: var(--neutral-light);
-  border-radius: 4px;
-  overflow: hidden;
+  color: var(--primary-color);
+  padding: 0.6rem 1.2rem;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  cursor: default;
+  display: inline-block;
 }
 
-.skill-bar-fill {
-  height: 100%;
-  background: linear-gradient(
-    to right,
-    var(--primary-color) 0%,
-    var(--accent-color) 100%
-  );
-  border-radius: 4px;
+.skill-tag:hover {
+  background-color: var(--primary-color);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  border-color: var(--accent-color);
 }
 
 /* Project styles */

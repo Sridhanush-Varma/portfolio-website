@@ -43,31 +43,6 @@ const Projects = () => {
       image: "https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
     },
     {
-      title: "Photography Portfolio Website",
-      description: "A full-stack web application for photographers to showcase their work professionally with a dynamic public-facing site and secure admin dashboard.",
-      details: [
-        "Built with Next.js, React, and TailwindCSS for responsive design",
-        "Implemented secure admin authentication using NextAuth.js",
-        "Created MongoDB database integration with Mongoose",
-        "Developed photo management system with category-based filtering"
-      ],
-      technologies: ["Next.js", "React", "MongoDB", "NextAuth.js", "TailwindCSS"],
-      github: "https://github.com/Sridhanush-Varma/Photography-Portfolio.git",
-      image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-    },
-    {
-      title: "Image Processing Suite",
-      description: "A comprehensive suite of image processing tools and algorithms for computer vision applications.",
-      details: [
-        "Developed algorithms for image dilation and erosion",
-        "Implemented morphological gradient detection",
-        "Created facial recognition system with live camera integration"
-      ],
-      technologies: ["Python", "OpenCV", "NumPy"],
-      github: "https://github.com/Sridhanush-Varma/Image-Processing-Suite.git",
-      image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-    },
-    {
       title: "Voxa - Voice-Enabled Smart Chatbot",
       description: "An advanced Python-based intelligent chatbot that supports voice interactions, natural language processing, weather information retrieval, web search capabilities, and an expanded knowledge base with advanced response generation.",
       details: [
