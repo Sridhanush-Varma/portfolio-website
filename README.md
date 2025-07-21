@@ -100,6 +100,15 @@ The site can be deployed using various platforms:
 
 This project is licensed under the MIT License - see the LICENSE file for details
 
+## 📢 Attribution Requirement
+
+If you use this project in any form (website, app, service, or derivative code), you **must** include the following attribution in your documentation, website footer, or credits page:
+
+> Created by Sridhanush Varma – [https://github.com/Sridhanush-Varma/portfolio-website](https://github.com/Sridhanush-Varma/portfolio-website)
+
+Thank you for respecting the work that went into this project! 💻✨
+
+
 ## 📞 Contact
 
 Sridhanush Varma - sridhanushvarmasv@outlook.com
