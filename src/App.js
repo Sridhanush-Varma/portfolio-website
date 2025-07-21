@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 
 function App() {
   return (
-    <Router basename="/Portfolio-Website">
+    <Router basename="/portfolio-website">
       <div className="App">
         <Header />
         <main>
